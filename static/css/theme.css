@@ -1,0 +1,8 @@
+.header {
+	align-items: center;
+	background: url('../header.png') repeat-x;
+	background-size: contain;
+	display: flex;
+	height: 4em;
+	justify-content: flex-end;
+}
