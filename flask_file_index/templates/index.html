@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<title>Remote data acquisition and logging &#8212; nwDaq</title>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/theme.css')}}" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+	</head>
+	<body>
+
+
+
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="container-lg container-fluid">
+				<a class="navbar-brand" href="/">nwDaq downloads</a>
+
+				<ul class="navbar-nav me-auto">
+					<li class="nav-item">
+						<a class="nav-link" aria-current="page" href="products">Products</a>
+					</li>
+
+				</ul>
+				<form class="d-flex">
+					<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success" type="submit">Search</button>
+				</form>
+			</div>
+		</nav>
+
+		<div class="header"></div>
+
+		<div class="content">
+			<div class="container-lg">
+				<h1 class="d-flex justify-content-between">
+					<div>
+						Directory /{{ directory }}
+					</div>
+					<div class="directory-up">
+						<a href="/{{ up }}"><i class="bi bi-arrow-up-square"></i></a>
+					</div>
+
+				</h1>
+
+				<div class="accordion" id="file-list">
+
+					{% for file in files %}
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="file-header-{{loop.index}}">
+							{% if file.isdir %}
+							<a href="{{ (request.path + '/' if request.path != '/' else '') + file.filename }}" role="button" class="accordion-button collapsed">
+								<i class="bi bi-folder"></i>
+								<div class="file-list-name">{{ file.filename }}</div>
+							</a>
+							{% else %}
+							<a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#file-collapse-{{loop.index}}" aria-expanded="false" aria-controls="file-collapse-{{loop.index}}">
+								<i class="bi bi-{{ file.icon }}"></i>
+								<div class="file-list-name">{{ file.filename }}</div>
+								<div class="file-list-type">{{ file.type }}</div>
+								<div class="file-list-size">{{ file.size }}</div>
+							</a>
+							{% endif %}
+						</h2>
+
+						{% if not file.isdir %}
+						<div id="file-collapse-{{loop.index}}" class="accordion-collapse collapse" aria-labelledby="file-header-{{loop.index}}" data-bs-parent="#file-list">
+							<div class="accordion-body">
+								<a href="{{ (request.path + '/' if request.path != '/' else '') + file.filename }}" role="button" class="btn btn-primary">Download</a>
+								Nejake dalsie veci
+							</div>
+						</div>
+						{% endif %}
+					</div>
+					{% endfor %}
+
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
