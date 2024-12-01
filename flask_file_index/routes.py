@@ -2,6 +2,8 @@ from flask_file_index import app
 from flask import render_template, abort, send_file
 import os
 import mimetypes
+import datetime
+import markdown
 
 ICONS = {
 	'text/x-python': 'filetype-py',
@@ -27,8 +29,15 @@ def index(req_path):
 	if os.path.isfile(abs_path):
 		return send_file(abs_path)
 
+	readme = ''
+	if os.path.exists(os.path.join(abs_path, 'README.md')):
+		readme = markdown.markdown(open(os.path.join(abs_path, 'README.md'), 'r').read())
+
 	files = []
 	for f in os.listdir(abs_path):
+		if f == 'README.md':
+			continue;
+
 		abs_file_path = os.path.join(abs_path, f)
 		mime_type = mimetypes.guess_type(abs_file_path)[0]
 
@@ -36,6 +45,7 @@ def index(req_path):
 			'filename': f,
 			'isdir': os.path.isdir(abs_file_path),
 			'type': mime_type,
+			'mtime': datetime.datetime.fromtimestamp(os.path.getmtime(abs_file_path)).replace(second=0, microsecond=0).isoformat(),
 			'icon': ICONS.get(mime_type, 'question'),
 			'size': human_readable_size(os.path.getsize(abs_file_path)),
 		})
@@ -43,4 +53,4 @@ def index(req_path):
 	files = sorted(files, key=lambda x: x['filename'])
 	files = sorted(files, key=lambda x: x['isdir'], reverse=True)
 
-	return render_template('index.html', directory=req_path, files=files, up=os.path.dirname(req_path))
+	return render_template('index.html', directory=req_path.replace('/', ' / '), files=files, up=os.path.dirname(req_path), readme=readme)

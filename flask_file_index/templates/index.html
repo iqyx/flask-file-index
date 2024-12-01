@@ -37,32 +37,69 @@
 
 		<div class="content">
 			<div class="container-lg">
-				<h1 class="d-flex justify-content-between">
+				<h1 class="d-flex justify-content-between current-directory">
+					<i class="bi bi-folder text-warning"></i>
 					<div>
-						Directory /{{ directory }}
+						/ {{ directory }}
 					</div>
 					<div class="directory-up">
 						<a href="/{{ up }}"><i class="bi bi-arrow-up-square"></i></a>
 					</div>
-
 				</h1>
 
+				<div class="section-readme">
+					{{ readme | safe }}
+				</div>
+
 				<div class="accordion" id="file-list">
+
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<div class="file-list-header">
+								<i class="bi bi-question"></i>
+								<div class="file-list-name collapse show">File name</div>
+								<div class="file-list-type collapse show">Type</div>
+								<div class="file-list-size collapse show">Size</div>
+								<div class="file-list-mtime collapse show">Modification time</div>
+								<div class="dropdown">
+									<button class="btn btn-sm" type="button" id="select-cols-button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+										<i class="bi bi-three-dots"></i>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="select-cols-button">
+										<li><h6 class="dropdown-header">Select visible columns</h6></li>
+										<li><a class="dropdown-item btn-toggle active" data-bs-toggle="button">
+											<div class="" data-bs-toggle="collapse" data-bs-target=".file-list-name">File name</div>
+										</a></li>
+										<li><a class="dropdown-item btn-toggle active" data-bs-toggle="button">
+											<div class="" data-bs-toggle="collapse" data-bs-target=".file-list-type">File type</div>
+										</a></li>
+										<li><a class="dropdown-item btn-toggle active" data-bs-toggle="button">
+											<div class="" data-bs-toggle="collapse" data-bs-target=".file-list-size">File size</div>
+										</a></li>
+										<li><a class="dropdown-item btn-toggle active" data-bs-toggle="button">
+											<div class="" data-bs-toggle="collapse" data-bs-target=".file-list-mtime">Modification time</div>
+										</a></li>
+									</ul>
+								</div>
+							</div>
+						</h2>
+					</div>
 
 					{% for file in files %}
 					<div class="accordion-item">
 						<h2 class="accordion-header" id="file-header-{{loop.index}}">
 							{% if file.isdir %}
-							<a href="{{ (request.path + '/' if request.path != '/' else '') + file.filename }}" role="button" class="accordion-button collapsed">
-								<i class="bi bi-folder"></i>
-								<div class="file-list-name">{{ file.filename }}</div>
+							<a href="{{ (request.path + '/' if request.path != '/' else '') + file.filename }}" role="button" class="accordion-button collapsed accordion-folder">
+								<i class="bi bi-folder text-warning"></i>
+								<div class="file-list-name collapse show">{{ file.filename }}</div>
 							</a>
 							{% else %}
 							<a class="accordion-button collapsed" role="button" data-bs-toggle="collapse" data-bs-target="#file-collapse-{{loop.index}}" aria-expanded="false" aria-controls="file-collapse-{{loop.index}}">
 								<i class="bi bi-{{ file.icon }}"></i>
-								<div class="file-list-name">{{ file.filename }}</div>
-								<div class="file-list-type">{{ file.type }}</div>
-								<div class="file-list-size">{{ file.size }}</div>
+								<div class="file-list-name collapse show">{{ file.filename }}</div>
+								<div class="file-list-type collapse show">{{ file.type }}</div>
+								<div class="file-list-size collapse show">{{ file.size }}</div>
+								<div class="file-list-mtime collapse show">{{ file.mtime }}</div>
 							</a>
 							{% endif %}
 						</h2>
